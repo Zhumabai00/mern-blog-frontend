@@ -8,19 +8,22 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import { useSelector } from 'react-redux';
 import { selectIsAuth } from '../../redux/slices/auth';
-import { Navigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
 
 export const AddPost = () => {
-  const isAuth = useSelector(selectIsAuth)
-
-  const [value, setValue] = React.useState('');
+  const isAuth = useSelector(selectIsAuth);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [text, setText] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
   const [imageUrl, setImageUrl] = React.useState('');
 
   const inputFileRef = React.useRef(null)
+
+  const isEditing = (!!id)
 
   const handleChangeFile = async (event) => {
     try {
@@ -40,8 +43,45 @@ export const AddPost = () => {
   };
 
   const onChange = React.useCallback((value) => {
-    setValue(value);
+    setText(value);
   }, []);
+
+  const onSubmit = async () => {
+    try {
+      setIsLoading(true)
+
+      const fields = {
+        title,
+        text,
+        imageUrl,
+        tags,
+      }
+      const { data } = isEditing
+        ? await axios.patch(`/posts/${id}`, fields)
+        : await axios.post('/posts', fields);
+
+      const _id = isEditing ? id : data._id;
+
+      navigate(`/posts/${_id}`)
+    } catch (err) {
+      console.warn(err);
+      alert('Creating an error!');
+    }
+  }
+
+  React.useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`).then(({ data }) => {
+        setText(data.text);
+        setTitle(data.title);
+        setImageUrl(data.imageUrl);
+        setTags(data.tags.join(','));
+      }).catch(err => {
+        console.warn(err);
+        alert('Getting an error!');
+      })
+    }
+  }, [])
 
   const options = React.useMemo(
     () => ({
@@ -90,14 +130,14 @@ export const AddPost = () => {
         value={tags}
         onChange={e => setTags(e.target.value)}
         classes={{ root: styles.tags }} variant="standard" placeholder="Тэги" fullWidth />
-      <SimpleMDE className={styles.editor} value={value} onChange={onChange} options={options} />
+      <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
-        <Button size="large" variant="contained">
-          Опубликовать
+        <Button onClick={onSubmit} size="large" variant="contained">
+          {isEditing ? 'Cохранить' : 'Опубликовать'}
         </Button>
-        <a href="/">
+        <Link to="/">
           <Button size="large">Отмена</Button>
-        </a>
+        </Link>
       </div>
     </Paper>
   );
