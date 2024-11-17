@@ -12,7 +12,7 @@ export const Index = () => {
       <div className={styles.root}>
         <Avatar
           classes={{ root: styles.avatar }}
-          src="https://mui.com/static/images/avatar/5.jpg"
+          src="..."
         />
         <div className={styles.form}>
           <TextField
@@ -22,7 +22,7 @@ export const Index = () => {
             multiline
             fullWidth
           />
-          <Button variant="contained">Отправить</Button>
+          <Button variant="contained">Submit</Button>
         </div>
       </div>
     </>

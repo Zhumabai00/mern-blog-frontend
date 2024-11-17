@@ -4,7 +4,7 @@ export const theme = createTheme({
   shadows: ["none"],
   palette: {
     primary: {
-      main: "#4361ee",
+      main: "#6366f1",
     },
   },
   typography: {
