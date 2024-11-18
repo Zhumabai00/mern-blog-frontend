@@ -8,6 +8,7 @@ import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchTags } from '../redux/slices/posts.js';
+import { formattedDate } from '../components/datehook.js';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ export const Home = () => {
                     : ''
                 }
                 user={obj.user}
-                createdAt={obj.createdAt}
+                createdAt={formattedDate(obj.createdAt)}
                 viewsCount={obj.viewsCount}
                 commentsCount={3}
                 tags={obj.tags}

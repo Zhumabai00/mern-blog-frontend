@@ -5,6 +5,7 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import { useParams } from "react-router-dom";
 import axios from "../axios";
 import ReactMarkdown from "react-markdown";
+import { formattedDate } from "../components";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
@@ -33,7 +34,7 @@ export const FullPost = () => {
         title={data.title}
         imageUrl={data.imageUrl ? `${process.env.REACT_APP_API_URL || 'http://localhost:4444'}${data.imageUrl}` : ''}
         user={data.user}
-        createdAt={data.createdAt}
+        createdAt={formattedDate(data.createdAt)}
         viewsCount={data.viewsCount}
         commentsCount={3}
         tags={data.tags}
@@ -48,7 +49,7 @@ export const FullPost = () => {
               fullName: "Username",
               avatarUrl: "...",
             },
-            text: "Это тестовый комментарий 555555",
+            text: "This is first comment.",
           },
           {
             user: {
